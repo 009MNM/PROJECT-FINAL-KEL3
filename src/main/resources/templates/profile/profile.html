@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<div class="max-w-4xl mx-auto py-10 px-4">
+    <div class="bg-white shadow rounded-lg p-6">
+        <div class="flex items-center space-x-6">
+            <img th:src="${user.profileImageUrl != null && !user.profileImageUrl.isEmpty() ? user.profileImageUrl : 'https://ui-avatars.com/api/?name=' + user.fullName}"
+                 class="h-24 w-24 rounded-full object-cover border-4 border-indigo-100">
+
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900" th:text="${user.fullName}">Nama Lengkap</h1>
+                <p class="text-gray-500" th:text="${user.email}">email@example.com</p>
+            </div>
+        </div>
+
+        <div class="mt-8 border-t border-gray-200 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-semibold text-gray-500 uppercase">Username</label>
+                <p class="mt-1 text-lg text-gray-900" th:text="${user.username}"></p>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-500 uppercase">Phone Number</label>
+                <p class="mt-1 text-lg text-gray-900" th:text="${user.phoneNumber ?: '-'}"></p>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-500 uppercase">Address</label>
+                <p class="mt-1 text-lg text-gray-900" th:text="${user.address ?: '-'}"></p>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-500 uppercase">Bio</label>
+                <p class="mt-1 text-gray-700 italic" th:text="${user.bio ?: 'No bio available.'}"></p>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <a href="/profile/edit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition">Edit Profile</a>
+            <a href="/" class="ml-4 text-gray-600 hover:underline">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product CRUD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Menghilangkan panah dropdown default di beberapa browser */
+        .group:hover .group-hover\:block {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<nav th:fragment="navbar"
+     class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center shadow-lg"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <a th:href="@{/}" class="text-xl font-bold tracking-tight hover:text-blue-400 transition">
+        Product <span class="text-blue-500">CRUD</span>
+    </a>
+
+    <div class="flex items-center gap-8">
+        <div class="hidden md:flex items-center gap-6">
+            <a th:href="@{/}" class="hover:text-blue-400 transition border-b-2 border-transparent hover:border-blue-400">Home</a>
+            <a th:href="@{/products}" class="hover:text-blue-400 transition border-b-2 border-transparent hover:border-blue-400">Products</a>
+        </div>
+
+        <div class="relative group" sec:authorize="isAuthenticated()">
+            <button class="flex items-center gap-2 bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition focus:outline-none">
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold uppercase">
+                    <span th:text="${#strings.substring(#authentication.name, 0, 1)}">U</span>
+                </div>
+                <span class="text-sm font-medium">
+                        Halo, <span th:text="${#authentication.name}">User</span>
+                    </span>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+
+            <div class="absolute right-0 w-48 bg-white text-gray-800 rounded-xl shadow-2xl py-2 hidden group-hover:block transition-all duration-300 transform origin-top-right z-50 border border-gray-200">
+                <div class="px-4 py-2 border-b border-gray-100 mb-1">
+                    <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Menu User</p>
+                </div>
+
+                <a th:href="@{/profile}" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600 text-sm transition">
+                    👤 Lihat Profil
+                </a>
+                <a th:href="@{/profile/edit}" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600 text-sm transition">
+                    ⚙️ Edit Profil
+                </a>
+                <a th:href="@{/change-password}" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600 text-sm transition border-b border-gray-100">
+                    🔑 Ganti Password
+                </a>
+
+                <form th:action="@{/logout}" method="post" class="w-full">
+                    <button type="submit" class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50 text-sm transition font-medium">
+                        🚪 Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <a th:href="@{/login}" sec:authorize="!isAuthenticated()"
+           class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+            Login
+        </a>
+    </div>
+</nav>
+
+<footer th:fragment="footer">
+    <div class="text-center text-gray-400 py-8 border-t border-gray-200 mt-12 bg-white">
+        <p class="text-sm">Product CRUD - Praktikum JPA Fundamentals - 2026</p>
+        <p class="text-xs mt-1">Dibuat oleh kelompok 3</p>
+    </div>
+</footer>
+
+</body>
+</html>

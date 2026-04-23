@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product CRUD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<!-- Navbar Tailwind -->
+<nav th:fragment="navbar"
+     class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <a th:href="@{/}" class="text-lg font-bold">Product CRUD</a>
+
+    <div class="flex items-center gap-6">
+        <a th:href="@{/}" class="hover:text-gray-300">Home</a>
+        <a th:href="@{/products}" class="hover:text-gray-300">Products</a>
+
+        <div class="flex items-center gap-3" sec:authorize="isAuthenticated()">
+            <span class="text-sm">
+                Halo, <strong th:text="${#authentication.name}">User</strong>
+            </span>
+            <form th:action="@{/logout}" method="post">
+                <button class="bg-red-500 px-3 py-1 rounded hover:bg-red-600 text-sm">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Footer -->
+<footer th:fragment="footer">
+    <div class="text-center text-gray-500 py-6 border-t mt-10">
+        Product CRUD - Praktikum JPA Fundamentals - 2026
+    </div>
+</footer>
+
+</html>

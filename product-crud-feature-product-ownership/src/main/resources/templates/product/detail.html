@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header}">
+</head>
+<body class="bg-gray-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="max-w-3xl mx-auto bg-white p-6 mt-10 rounded shadow">
+
+    <h2 class="text-2xl font-bold mb-6"
+        th:text="${product.name}">Nama Produk</h2>
+
+    <div class="space-y-4 text-sm">
+
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Nama</span>
+            <span th:text="${product.name}"></span>
+        </div>
+
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Kategori</span>
+            <span th:text="${product.category?.displayName}"></span>
+        </div>
+
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Harga</span>
+            <span th:text="${'Rp ' + #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+        </div>
+
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Stok</span>
+            <span th:text="${product.stock}"></span>
+        </div>
+
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Deskripsi</span>
+            <span th:text="${product.description}"></span>
+        </div>
+
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Status</span>
+            <span>
+                <span th:if="${product.active}"
+                      class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Aktif</span>
+                <span th:unless="${product.active}"
+                      class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Tidak Aktif</span>
+            </span>
+        </div>
+
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Tanggal Dibuat</span>
+            <span th:text="${product.createdAt}"></span>
+        </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex gap-3 mt-6">
+        <a th:href="@{/products/{id}/edit(id=${product.id})}"
+           class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+            Edit
+        </a>
+
+        <a th:href="@{/products}"
+           class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Kembali
+        </a>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
