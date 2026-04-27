@@ -1,18 +1,33 @@
 package com.example.productcrud.model;
 
-public enum Category {
-    ELEKTRONIK("Elektronik"),
-    BUKU("Buku"),
-    MAKANAN("Makanan"),
-    PAKAIAN("Pakaian");
+import jakarta.persistence.*;
+import java.util.List;
 
-    private final String displayName;
+@Entity
+@Table(name = "categories")
+public class Category {
 
-    Category(String displayName) {
-        this.displayName = displayName;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public String getDisplayName() {
-        return displayName;
-    }
+    private String name;
+    private String description;
+
+    // 🔥 TAMBAHAN RELASI
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products;
+
+    // Getter & Setter
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public List<Product> getProducts() { return products; }
+    public void setProducts(List<Product> products) { this.products = products; }
 }

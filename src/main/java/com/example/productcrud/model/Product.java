@@ -1,9 +1,7 @@
 package com.example.productcrud.model;
 
 import java.time.LocalDate;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -17,9 +15,12 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 50)
+    // --- PERBAIKAN DI SINI ---
+    // Hapus @Enumerated, ganti dengan @ManyToOne
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
+    // -------------------------
 
     private long price;
 
@@ -40,6 +41,7 @@ public class Product {
     public Product() {
     }
 
+    // Constructor diperbarui untuk menerima Category sebagai Class
     public Product(Long id, String name, Category category, long price, int stock,
                    String description, boolean active, LocalDate createdAt) {
         this.id = id;

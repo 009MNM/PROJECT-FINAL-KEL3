@@ -37,8 +37,6 @@ public class AuthPageFilter extends OncePerRequestFilter {
                     && authentication.isAuthenticated()
                     && !(authentication instanceof AnonymousAuthenticationToken)) {
 
-                // Kalau user maksa buka halaman forgot padahal sudah login,
-                // lempar ke halaman products
                 response.sendRedirect("/products");
                 return;
             }
