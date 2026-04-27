@@ -67,19 +67,27 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String listProducts(@AuthenticationPrincipal UserDetails userDetails,
-                               @RequestParam(required = false) String keyword,
-                               @RequestParam(required = false) Long categories,
-                               Model model) {
-        if (userDetails == null) return "redirect:/login";
+    public String listProducts(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long category
+    ) {
         User currentUser = getCurrentUser(userDetails);
 
-        // Ambil semua dulu, nanti filter search bisa menyusul di Service
-        List<Product> products = productService.findAllByOwner(currentUser);
+        // Gunakan tipe data eksplisit (lebih kompatibel)
+        Page<Product> productPage = productService.getProductsPaginated(page, size, search, category, currentUser);
 
-        model.addAttribute("user", currentUser);
-        model.addAttribute("products", products);
+        model.addAttribute("products", productPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("totalItems", productPage.getTotalElements());
+        model.addAttribute("currentSearch", search);
+        model.addAttribute("currentCategory", category);
         model.addAttribute("categories", categoryRepository.findAll());
+
         return "product/list";
     }
 

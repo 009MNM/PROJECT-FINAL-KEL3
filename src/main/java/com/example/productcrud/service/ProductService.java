@@ -3,6 +3,9 @@ package com.example.productcrud.service;
 import com.example.productcrud.model.Product;
 import com.example.productcrud.model.User;
 import com.example.productcrud.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +34,12 @@ public class ProductService {
 
     public void deleteByIdAndOwner(Long id, User owner) {
         productRepository.findByIdAndOwner(id, owner)
-                .ifPresent(product -> productRepository.delete(product));
+                .ifPresent(productRepository::delete);
+    }
+
+    public Page<Product> getProductsPaginated(int page, int size, String keyword, Long categoryId, User owner) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        return productRepository.searchAndFilter(keyword, categoryId, owner.getId(), pageable);
     }
 }
