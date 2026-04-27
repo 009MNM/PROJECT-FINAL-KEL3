@@ -12,15 +12,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    // Pastikan Constructor-nya cuma satu dan manggil UserRepository
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Nyari user di database buat login
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "User tidak ditemukan: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User gak ada, Lek: " + username));
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
