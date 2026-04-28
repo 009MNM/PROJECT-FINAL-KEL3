@@ -20,7 +20,7 @@
 
         <div class="flex justify-between border-b pb-2">
             <span class="text-gray-500">Kategori</span>
-            <span th:text="${product.category?.displayName}"></span>
+            <span th:text="${product.category?.name ?: 'Tanpa Kategori'}"></span>
         </div>
 
         <div class="flex justify-between border-b pb-2">

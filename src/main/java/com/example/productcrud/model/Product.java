@@ -31,7 +31,7 @@ public class Product {
 
     private boolean active;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate createdAt;
 
     @ManyToOne

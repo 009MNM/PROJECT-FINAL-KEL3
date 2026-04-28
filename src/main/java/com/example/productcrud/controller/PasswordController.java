@@ -16,38 +16,35 @@ public class PasswordController {
     @Autowired
     private UserService userService;
 
-    // --- FITUR LUPA PASSWORD (AKSES LUAR/BELUM LOGIN) ---
-
+    // --- TAMPILKAN FORM (GUEST ATAU LOGIN) ---
     @GetMapping("/forgot-password")
-    public String showForgotPasswordForm() {
+    public String showForgotPasswordForm(Principal principal, Model model) {
+        // Cek dulu: apakah user sudah login?
+        // Jika sudah, kita bantu isi field email-nya secara otomatis.
+        // Jika belum (principal == null), biarkan email kosong.
+        if (principal != null) {
+            model.addAttribute("email", principal.getName());
+        }
         return "forgot-password";
     }
 
+    // --- PROSES CEK EMAIL (DARI FORM) ---
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam("email") String email, Model model) {
+        // Logika sederhana: langsung anggap sukses atau tambahkan pengecekan ke DB jika perlu
         model.addAttribute("email", email);
         model.addAttribute("success", true);
         return "forgot-password";
     }
 
+    // --- TAMPILKAN FORM INPUT PASSWORD BARU ---
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam("email") String email, Model model) {
         model.addAttribute("email", email);
         return "reset-password";
     }
 
-    // --- FITUR GANTI PASSWORD (AKSES DALAM/MENU "HALO CINTAAA") ---
-
-    @GetMapping("/change-password")
-    public String showChangePasswordForm(Principal principal, Model model) {
-        // Ambil email/username otomatis dari user yang sedang login
-        String email = principal.getName();
-        model.addAttribute("email", email);
-        return "change-password";
-    }
-
-    // --- PROSES UPDATE (DIPAKAI KEDUA FITUR DI ATAS) ---
-
+    // --- PROSES UPDATE PASSWORD KE DATABASE ---
     @PostMapping("/reset-password")
     public String handleResetPassword(@RequestParam("email") String email,
                                       @RequestParam("newPassword") String newPassword,
@@ -57,16 +54,15 @@ public class PasswordController {
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("error", "Konfirmasi password tidak cocok!");
             model.addAttribute("email", email);
-            // Jika ada error, kembalikan ke halaman yang sesuai
             return "reset-password";
         }
 
         try {
             userService.updatePassword(email, newPassword);
-            // Setelah berhasil, lempar ke logout/login biar user masuk pake password baru
-            return "redirect:/login?logout";
+            // Redirect ke login dan tambahkan pesan sukses via parameter
+            return "redirect:/login?resetSuccess";
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
+            model.addAttribute("error", "Gagal update password: " + e.getMessage());
             model.addAttribute("email", email);
             return "reset-password";
         }

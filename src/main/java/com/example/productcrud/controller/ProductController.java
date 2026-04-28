@@ -86,7 +86,7 @@ public class ProductController {
         model.addAttribute("totalItems", productPage.getTotalElements());
         model.addAttribute("currentSearch", search);
         model.addAttribute("currentCategory", category);
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findByUser(currentUser));
 
         return "product/list";
     }
@@ -100,12 +100,13 @@ public class ProductController {
 
         model.addAttribute("user", currentUser);
         model.addAttribute("product", product);
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findByUser(currentUser));
+
         return "product/form";
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@ModelAttribute Product product,
+    public String saveProduct(@ModelAttribute("product") Product product,
                               @RequestParam(value = "categoryId", required = false) Long categoryId,
                               @AuthenticationPrincipal UserDetails userDetails,
                               RedirectAttributes redirectAttributes) {
@@ -124,6 +125,8 @@ public class ProductController {
         return "redirect:/products";
     }
 
+
+
     @PostMapping("/products/{id}/delete")
     public String deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         User currentUser = getCurrentUser(userDetails);
@@ -131,4 +134,35 @@ public class ProductController {
         redirectAttributes.addFlashAttribute("successMessage", "Produk berhasil dihapus!");
         return "redirect:/products";
     }
+
+    @GetMapping("/products/{id}/edit")
+    public String showEditForm(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User currentUser = getCurrentUser(userDetails);
+        Product product = productService.findByIdAndOwner(id, currentUser)
+                .orElseThrow(() -> new RuntimeException("Produk tidak ditemukan"));
+
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categoryRepository.findByUser(currentUser));
+
+        return "product/form";
+    }
+
+    @GetMapping("/products/{id}")
+    public String viewProduct(@PathVariable Long id,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              Model model) {
+        // Ambil user yang sedang login
+        User currentUser = getCurrentUser(userDetails);
+
+        // Cari produk berdasarkan ID dan pastikan pemiliknya adalah user yang login
+        Product product = productService.findByIdAndOwner(id, currentUser)
+                .orElseThrow(() -> new RuntimeException("Produk tidak ditemukan atau Anda tidak memiliki akses"));
+
+        // Masukkan data produk ke model untuk ditampilkan di HTML
+        model.addAttribute("product", product);
+
+        // Mengarah ke file: src/main/resources/templates/product/view.html
+        return "product/detail";
+    }
+
 }

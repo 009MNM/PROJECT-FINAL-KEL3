@@ -46,7 +46,7 @@ public class HomeController {
         Map<String, Long> perKategori = products.stream()
                 .filter(p -> p.getCategory() != null)
                 .collect(Collectors.groupingBy(
-                        p -> p.getCategory().toString(),
+                        p -> p.getCategory().getName(),
                         Collectors.counting()
                 ));
 

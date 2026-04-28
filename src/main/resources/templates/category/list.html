@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header}"></head>
+<body class="bg-gray-100">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="max-w-4xl mx-auto px-4 mt-8">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Manajemen Kategori</h2>
+        <a th:href="@{/categories/new}"
+           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition inline-block">
+            + Tambah Kategori
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full">
+            <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="py-3 px-6 text-left">Nama Kategori</th>
+                <th class="py-3 px-6 text-left">Deskripsi</th>
+                <th class="py-3 px-6 text-center">Aksi</th>
+            </tr>
+            </thead>
+            <td class="py-3 px-6 text-center">
+                <a th:href="@{/categories/edit/{id}(id=${cat.id})}" class="text-blue-500 hover:underline mr-3">
+                    Edit
+                </a>
+
+                <form th:action="@{/categories/{id}/delete(id=${cat.id})}"
+                      method="post" style="display:inline;">
+                    <button type="submit" class="text-red-500 hover:underline"
+                            onclick="return confirm('Yakin ingin menghapus kategori ini?')">
+                        Hapus
+                    </button>
+                </form>
+            </td>
+            <tr th:if="${#lists.isEmpty(categories)}">
+                <td colspan="3" class="text-center py-10 text-gray-500">
+                    Belum ada kategori. Pastikan database/import.sql sudah terisi.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -14,6 +14,14 @@ public class Category {
     private String name;
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // Pemilik kategori
+
+    // Tambah Getter & Setter-nya
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
     // 🔥 TAMBAHAN RELASI
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products;

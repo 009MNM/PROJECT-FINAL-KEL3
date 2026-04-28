@@ -2,6 +2,7 @@ package com.example.productcrud.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +16,7 @@ public class SecurityConfig {
 
     private final AuthPageFilter authPageFilter;
 
+    @Lazy
     public SecurityConfig(AuthPageFilter authPageFilter) {
         this.authPageFilter = authPageFilter;
     }
@@ -22,17 +24,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // 1. MATIKAN CSRF (Sangat penting agar POST/DELETE data tidak diblokir)
+                .csrf(csrf -> csrf.disable())
+
+                // 2. DAFTARKAN FILTER (Letakkan di awal sebelum routing)
                 .addFilterBefore(authPageFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // 3. PENGATURAN AKSES URL
                 .authorizeHttpRequests(auth -> auth
-                        // BERIKUT ADALAH PENAMBAHAN JALUR FORGOT & RESET PASSWORD
-                        .requestMatchers("/login", "/register", "/forgot-password", "/reset-password", "/css/**", "/js/**").permitAll()
+                        // URL yang bisa diakses tanpa login
+                        .requestMatchers("/login", "/register", "/forgot-password", "/reset-password", "/error", "/css/**", "/js/**").permitAll()
+                        // URL Category & Produk butuh login (anyRequest)
                         .anyRequest().authenticated()
                 )
+
+                // 4. KONFIGURASI LOGIN
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )
+
+                // 5. KONFIGURASI LOGOUT
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")

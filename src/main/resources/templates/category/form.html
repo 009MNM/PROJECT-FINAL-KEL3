@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${category.id == null ? 'Tambah Kategori' : 'Edit Kategori'}"></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto mt-10 max-w-lg bg-white p-8 rounded-lg shadow">
+    <h2 class="text-2xl font-bold mb-6" th:text="${category.id == null ? 'Tambah Kategori Baru' : 'Edit Kategori'}"></h2>
+
+    <form th:action="@{/categories/save}" th:object="${category}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <input type="text" th:field="*{name}" placeholder="Nama Kategori" required>
+        <textarea th:field="*{description}" placeholder="Deskripsi"></textarea>
+        <button type="submit">Simpan</button>
+    </form>
+</div>
+</body>
+</html>
